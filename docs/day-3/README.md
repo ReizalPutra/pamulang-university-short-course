@@ -225,6 +225,7 @@ Hal penting yang perlu diingat:
 ```bash
 cd apps/frontend
 npm install
+npx create-next-app@latest
 npm run dev
 ```
 
@@ -247,6 +248,66 @@ Langkah umum:
 
 📌 Detail teknis dijelaskan saat demo live.
 
+```bash
+
+npm install wagmi viem @tanstack/react-query
+npm install @walletconnect/ethereum-provider
+```
+
+
+create file provider.tsx
+
+```bash
+'use client';
+
+import { WagmiProvider, createConfig, http } from 'wagmi';
+import { avalancheFuji } from 'wagmi/chains';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+const config = createConfig({
+  chains: [avalancheFuji],
+  transports: {
+    [avalancheFuji.id]: http(),
+  },
+});
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
+}
+```
+
+
+edit layout.tsx
+
+```bash
+import './globals.css';
+import { Providers } from './providers';
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  );
+}
+```
+
+
+
 ---
 
 ## 2.3 Connect Wallet (Core Wallet)
@@ -257,6 +318,52 @@ Demo mencakup:
 - Connect via Core Wallet
 - Ambil wallet address
 - Deteksi network (Fuji)
+
+edit page.tsx on app folder
+
+``` bash
+'use client';
+
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { injected } from 'wagmi/connectors';
+
+export default function Home() {
+  const { address, isConnected } = useAccount();
+  const { connect, isPending } = useConnect();
+  const { disconnect } = useDisconnect();
+
+  return (
+    <main className="min-h-screen flex items-center justify-center">
+      <div className="p-6 border rounded space-y-4">
+        <h1 className="text-xl font-bold">Step 1: Connect Wallet</h1>
+
+        {!isConnected ? (
+          <button
+            onClick={() => connect({ connector: injected() })}
+            disabled={isPending}
+            className="px-4 py-2 bg-black text-white rounded"
+          >
+            {isPending ? 'Connecting...' : 'Connect Wallet'}
+          </button>
+        ) : (
+          <div className="space-y-2">
+            <p className="text-sm">Connected address:</p>
+            <p className="font-mono text-xs break-all">{address}</p>
+
+            <button
+              onClick={() => disconnect()}
+              className="text-sm underline text-red-600"
+            >
+              Disconnect
+            </button>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}
+
+```
 
 ---
 
