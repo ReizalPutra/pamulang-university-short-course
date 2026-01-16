@@ -38,7 +38,7 @@ async function connectWallet() {
     });
 
     const address = accounts[0];
-    addressEl.textContent = address.slice(0, 6) + "..." + address.slice(-4);;
+    addressEl.textContent = address.slice(0, 6) + "..." + address.slice(-4);
 
     console.log({ address });
 
