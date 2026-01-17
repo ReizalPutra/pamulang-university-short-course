@@ -7,7 +7,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('blockchain')
-    .setDescription('The blockchain API description')
+    .setDescription('Nama : Muhamad Reizal Putra Hidayat. Nim: 221011401923')
     .setVersion('1.0')
     .addTag('blockchain')
     .build();
