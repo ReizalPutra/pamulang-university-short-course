@@ -18,12 +18,9 @@ export class BlockchainService {
       transport: http('https://api.avax-test.network/ext/bc/C/rpc'),
     });
 
-    // GANTI dengan address hasil deploy Day 2
     this.contractAddress =
       '0x2de6D0738020E93AA4A7DfD20b0D3b1eC26ed8bE' as `0x${string}`;
   }
-
-  // 🔹 Read latest value
   async getLatestValue() {
     try {
       const value: bigint = (await this.client.readContract({
@@ -39,13 +36,8 @@ export class BlockchainService {
       this.handleRpcError(error);
     }
   }
-
-  // 🔹 Read ValueUpdated events
   async getValueUpdatedEvents(fromBlock: number, toBlock: number) {
     try {
-      // Sebelum eksekusi logic pastikan (toBlock - fromBlock) < 2048
-      // Jika lebih besar, kembalikan error ke client
-
       const events = await this.client.getLogs({
         address: this.contractAddress,
         event: {
